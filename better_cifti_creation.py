@@ -3,13 +3,13 @@
 import argparse
 import subprocess
 import os
+import glob
 
 # parse arguments to command
 parser = argparse.ArgumentParser(description='This script creates a Cifti for a single session from freesurfer and fcprocessed outputs.')
+parser.add_argument('--fcprocessed_dir', required=True, help='Path to UNSMOOTHED fc-processed data (single session of subject)')
+parser.add_argument('--fcprocessed_suffix', default='_b1_faln_dbnd_xr3d_uwrp_atl_bpss_resid', help='suffix of UNSMOOTHED fc-processed data (Default is _faln_dbnd_xr3d_uwrp_atl_bpss_resid)')
 parser.add_argument('--tmask', required=True, help='Path to tmask')
-parser.add_argument('--fcprocessed', required=True, help='Path to UNSMOOTHED fc-processed data (single session of subject)')
-parser.add_argument('--fcprocessed_suffix', default='_faln_dbnd_xr3d_uwrp_atl_bpss_resid', help='suffix of UNSMOOTHED fc-processed data (Default is _faln_dbnd_xr3d_uwrp_atl_bpss_resid)')
-parser.add_argument('--output', default='/output', help='Path to output; Relative to Docker container')
 parser.add_argument('--subcort_mask', required=True, help='Path to volumetric subcortical mask label file')
 parser.add_argument('--fs_LR_surfdir', required=True, help='Location of fs_LR-registered surface')
 parser.add_argument('--medial_mask_L', required=True, help='Left atlas medial wall mask')
@@ -17,11 +17,12 @@ parser.add_argument('--medial_mask_R', required=True, help='Right atlas medial w
 parser.add_argument('--sw_medial_mask_L', help='small wall medial mask (Left)')
 parser.add_argument('--sw_medial_mask_R', help='small wall medial mask (Right)')
 parser.add_argument('--smoothnum', default=2.55, help='sigma of smoothing kernel to be applied')
+parser.add_argument('--output', default='/output', help='Path to output; Relative to Docker container')
 
 # parse argumaents into dict
 settings = vars(parser.parse_args())
 
-# create relavant directories in output folder
+# create relevant directories in output folder
 try:
     os.mkdir(os.path.join(settings['output'],'surf_timecourses'))
 except FileExistsError:
@@ -34,11 +35,20 @@ try:
     os.mkdir(os.path.join(settings['output'],'goodvoxels'))
 except FileExistsError:
     print('goodvoxels directory already exists.')
-if (not settings['sw_medial_mask_L'] == None) and (not settings['sw_medial_mask_R'] == None):
+if settings['sw_medial_mask_L'] != None and settings['sw_medial_mask_R'] != None:
     try:
         os.mkdir(os.path.join(settings['output'],'cifti_timeseries_smallwall'))
     except FileExistsError:
         print('cifti_timeseries_smallwall directory already exists.')
 
+# get the functional bold runs and concatenate them
+# TO-DO, Just grab manual concat in session folder for now
+func_run = glob.glob(os.path.join(settings['fcprocessed_dir'],'*{}.4dfp.img'.format(settings['fcprocessed_suffix'])))
+assert func_run, 'functional bold run not found for session.'
+
 # convert 4dfp to nifti
-os.system('niftigz_4dfp')
+os.system('niftigz_4dfp -n {} /tmp/funcvol_temp'.format(func_run[0]))
+
+# Remove NaNs from data
+os.system('fslmaths /tmp/funcvol_temp -nan /tmp/funcvol')
+os.remove('/tmp/funcvol_temp.nii.gz')
