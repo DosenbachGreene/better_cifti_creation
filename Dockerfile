@@ -1,5 +1,5 @@
 # better cifti creation image
-from vanandrew/dglabimg
+FROM vanandrew/dglabimg
 MAINTAINER Andrew Van <vanandrew@wustl.edu>
 
 # install python3 and nibabel
