@@ -179,7 +179,7 @@ def run(settings):
 
 if __name__ == '__main__':
     # parse arguments to command
-    parser = argparse.ArgumentParser(description='This script creates a Cifti for a single session from freesurfer and fcprocessed outputs. All paths are realtive to docker container.')
+    parser = argparse.ArgumentParser(description='This script creates a Cifti for a single session from freesurfer and fcprocessed outputs. All paths are relative to docker container.')
     parser.add_argument('--fcprocessed_dir', required=True, help='Path to fc-processed data (single session of subject)')
     parser.add_argument('--fcprocessed_suffix', default='_b1_faln_dbnd_xr3d_uwrp_atl_bpss_resid', help='suffix of UNSMOOTHED fc-processed data (Default is _faln_dbnd_xr3d_uwrp_atl_bpss_resid)')
     parser.add_argument('--unprocessed_suffix', default='_b1_faln_dbnd_xr3d_uwrp_atl', help='suffix of UNPROCESSED fc-processed data (Default is _faln_dbnd_xr3d_uwrp_atl)')
