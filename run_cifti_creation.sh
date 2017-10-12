@@ -7,6 +7,7 @@ docker run -it --rm \
     -v $(pwd)/output:/output \
     vanandrew/better_cifti_creation \
     --tmask /input/vc38671_NEW_TMASK.txt \
+    --TR 2.2 \
     --fcprocessed_dir /input/vc38671 \
     --subcort_mask /input/subcortical_mask_LR_333.nii \
     --fs_LR_surfdir /input/MSC01 \

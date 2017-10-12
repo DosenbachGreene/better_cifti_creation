@@ -6,6 +6,9 @@ import os
 import subprocess
 
 def collect(settings,ribbon_path,session):
+    """
+        TO-DO Explaination of what this function does
+    """
     # set goodvoxel settings (expose this to user in future?)
     neighsmooth = 5
     factor = 0.5
