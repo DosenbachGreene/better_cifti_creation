@@ -10,7 +10,7 @@ def create(settings):
     # define directories for surface files
     print('Creating Ribbon...')
     Native = os.path.join(settings['fs_LR_surfdir'],'Native')
-    Ribbon = os.path.join(settings['fs_LR_surfdir'],'Ribbon')
+    Ribbon = os.path.join(settings['output'],'Ribbon')
     try: # try to create the ribbon directory
         os.mkdir(Ribbon)
     except FileExistsError:

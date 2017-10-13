@@ -30,6 +30,10 @@ def run(settings):
         os.mkdir(os.path.join(settings['output'],'goodvoxels'))
     except FileExistsError:
         print('goodvoxels directory already exists.')
+    try:
+        os.mkdir(os.path.join(settings['output'],'Ribbon'))
+    except FileExistsError:
+        print('Ribbon directory already exists.')
     if settings['sw_medial_mask_L'] != None and settings['sw_medial_mask_R'] != None:
         try:
             os.mkdir(os.path.join(settings['output'],'cifti_timeseries_smallwall'))
@@ -57,7 +61,7 @@ def run(settings):
     os.system('niftigz_4dfp -n {} /tmp/funcvol_unprocessed'.format(unproc_func_run[0]))
 
     # Test if ribbon already exists for this subject
-    ribbon_found = glob.glob(os.path.join(settings['fs_LR_surfdir'],'Ribbon','*.ribbon_333.nii.gz'))
+    ribbon_found = glob.glob(os.path.join(settings['output'],'Ribbon','*.ribbon_333.nii.gz'))
     if ribbon_found:
         print('Ribbon was already found at {}'.format(ribbon_found[0]))
         # assert that there is a t1 image and grab the subject name from it
