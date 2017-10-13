@@ -1,5 +1,5 @@
 # better cifti creation image
-FROM vanandrew/dglabimg
+FROM vanandrew/dglabimg:v1.00
 MAINTAINER Andrew Van <vanandrew@wustl.edu>
 
 # install python3 and nibabel
@@ -10,6 +10,7 @@ RUN apt-get update && apt-get install -y --allow-unauthenticated python3 python3
 ADD better_cifti_creation.py /mnt/
 ADD goodvoxels.py /mnt/
 ADD ribbon.py /mnt/
+ADD FreeSurferAllLut.txt /mnt/
 
 # Set Entrypoint
 WORKDIR /mnt

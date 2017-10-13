@@ -48,7 +48,7 @@ def run(settings):
     assert unproc_func_run, 'unprocessed bold run not found for session.'
 
     # grab session name from bold run
-    session = os.path.basename(func_run[0].split('_')[0])
+    session = os.path.basename(func_run[0]).split('_')[0]
 
     # convert 4dfp to nifti
     os.system('niftigz_4dfp -n {} /tmp/funcvol_temp'.format(func_run[0]))
