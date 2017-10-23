@@ -202,5 +202,5 @@ if __name__ == '__main__':
     # parse argumaents into dict
     settings = vars(parser.parse_args())
 
-    # Run main functiona
+    # Run main function
     run(settings)
