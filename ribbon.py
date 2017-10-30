@@ -96,8 +96,9 @@ def create(settings):
     os.system('niftigz_4dfp -n {0}/{1}.ribbon_333 {0}/{1}.ribbon_333'.format(Ribbon,sub))
 
     # Convert to 4dfp/222 space
-    os.system('t4img_4dfp none {0}/{1}.ribbon {0}/{1}.ribbon_222 -O222 -n'.format(Ribbon,sub))
-    os.system('niftigz_4dfp -n {0}/{1}.ribbon_222 {0}/{1}.ribbon_222'.format(Ribbon,sub))
+    os.system('t4img_4dfp none {0}/{1}.ribbon {0}/{1}.ribbon_222 -O222 -n'.format(Ribbon,sub)) 
+	os.system('niftigz_4dfp -n {0}/{1}.ribbon_222 {0}/{1}.ribbon_222'.format(Ribbon,sub))
+	os.system('wb_command -volume-label-import {0}/{1}.ribboni_222.nii.gz /mnt/FreeSurferAllLut.txt {0}/{1}.ribbon_222.nii.gz -discard-others -unlabeled-value 0'.format(Ribbon,sub))
 
     print('Ribbon Creation Done.')
 
