@@ -1,4 +1,4 @@
-# better cifti creation image
+#better cifti creation image
 FROM vanandrew/dglabimg:v1.00
 MAINTAINER Andrew Van <vanandrew@wustl.edu>
 
@@ -10,4 +10,4 @@ ADD FreeSurferAllLut.txt /mnt/
 
 # Set Entrypoint
 WORKDIR /mnt
-ENTRYPOINT ["./better_cifti_creation.py"]
+ENTRYPOINT ["/mnt/better_cifti_creation.py"]
