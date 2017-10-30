@@ -96,7 +96,7 @@ def create(settings):
     os.system('niftigz_4dfp -n {0}/{1}.ribbon_333 {0}/{1}.ribbon_333'.format(Ribbon,sub))
 
     # Convert to 4dfp/222 space
-    os.system('t4img_4dfp none {0}/{1}.ribbon {0}/{1}.ribbon_222 -0222 -n'.format(Ribbon,sub))
+    os.system('t4img_4dfp none {0}/{1}.ribbon {0}/{1}.ribbon_222 -O222 -n'.format(Ribbon,sub))
     os.system('niftigz_4dfp -n {0}/{1}.ribbon_222 {0}/{1}.ribbon_222'.format(Ribbon,sub))
 
     print('Ribbon Creation Done.')
