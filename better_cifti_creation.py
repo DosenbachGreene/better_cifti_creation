@@ -192,7 +192,7 @@ if __name__ == '__main__':
     parser.add_argument('--TR', required=True, help='TR of session')
     parser.add_argument('--tmask', required=True, help='Path to tmask')
     parser.add_argument('--subcort_mask', required=True, help='Path to volumetric subcortical mask label file')
-    parser.add_argument('--space'. default='333', help='Voxel space to write outputs in')
+    parser.add_argument('--space', default='333', help='Voxel space to write outputs in')
     parser.add_argument('--fs_LR_surfdir', required=True, help='Location of fs_LR-registered surface (Should contain Native and fsaverage_LR32k subfolders with surfaces)')
     parser.add_argument('--t1_suffix', default='_mpr_debias_avgT_111_t88', help='suffix of T1 image (Default is _mpr_debias_avgT_111_t88)')
     parser.add_argument('--medial_mask_L', required=True, help='Left atlas medial wall mask')
