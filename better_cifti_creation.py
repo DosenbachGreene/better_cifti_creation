@@ -61,7 +61,7 @@ def run(settings):
     os.system('niftigz_4dfp -n {} /temp/funcvol_unprocessed'.format(unproc_func_run[0]))
 
     # Test if ribbon already exists for this subject
-    ribbon_found = glob.glob(os.path.join(settings['output'],'Ribbon','*.ribbon_333.nii.gz'))
+    ribbon_found = glob.glob(os.path.join(settings['output'],'Ribbon','*.ribbon_{}.nii.gz'.format(settings['space'])))
     if ribbon_found:
         print('Ribbon was already found at {}'.format(ribbon_found[0]))
         # assert that there is a t1 image and grab the subject name from it
@@ -140,7 +140,7 @@ def run(settings):
     # Create cifti timeseries
     print('Subject {}, Session {}: Combining surface and volume data to create cifti timeseries.'.format(subject,session))
     os.system('wb_command '
-        '-cifti-create-dense-timeseries {0}/cifti_timeseries_normalwall/{1}_LR_surf_subcort_333_32k_fsLR_smooth{2}.dtseries.nii '
+        '-cifti-create-dense-timeseries {0}/cifti_timeseries_normalwall/{1}_LR_surf_subcort_{7}_32k_fsLR_smooth{2}.dtseries.nii '
         '-volume /temp/funcvol_wROI255.nii.gz {3} '
         '-left-metric {0}/surf_timecourses/{1}_L_dil10_32k_fs_LR_smooth{2}.func.gii '
         '-roi-left {4} '
@@ -154,14 +154,15 @@ def run(settings):
         settings['subcort_mask'], # Arg 3
         settings['medial_mask_L'], # Arg 4
         settings['medial_mask_R'], # Arg 5
-        settings['TR'] # Arg 6
+        settings['TR'], # Arg 6
+        settings['space'] # Arg 7
     ))
 
     # Only if smallwall exists
     if settings['sw_medial_mask_L'] != None and settings['sw_medial_mask_R'] != None:
         print('Subject {}, Session {}: Combining surface and volume data to create cifti timeseries (smallwall).'.format(subject,session))
         os.system('wb_command '
-            '-cifti-create-dense-timeseries {0}/cifti_timeseries_smallwall/{1}_LR_surf_subcort_333_32k_fsLR_smooth{2}.dtseries.nii '
+            '-cifti-create-dense-timeseries {0}/cifti_timeseries_smallwall/{1}_LR_surf_subcort_{7}_32k_fsLR_smooth{2}.dtseries.nii '
             '-volume /temp/funcvol_wROI255.nii.gz {3} '
             '-left-metric {0}/surf_timecourses/{1}_L_dil10_32k_fs_LR_smooth{2}.func.gii '
             '-roi-left {4} '
@@ -175,7 +176,8 @@ def run(settings):
             settings['subcort_mask'], # Arg 3
             settings['sw_medial_mask_L'], # Arg 4
             settings['sw_medial_mask_R'], # Arg 5
-            settings['TR'] # Arg 6
+            settings['TR'], # Arg 6
+            settings['space'] # Arg 7
         ))
 
     # Delete temp files
@@ -190,6 +192,7 @@ if __name__ == '__main__':
     parser.add_argument('--TR', required=True, help='TR of session')
     parser.add_argument('--tmask', required=True, help='Path to tmask')
     parser.add_argument('--subcort_mask', required=True, help='Path to volumetric subcortical mask label file')
+    parser.add_argument('--space', default='333', help='Voxel space to write outputs in')
     parser.add_argument('--fs_LR_surfdir', required=True, help='Location of fs_LR-registered surface (Should contain Native and fsaverage_LR32k subfolders with surfaces)')
     parser.add_argument('--t1_suffix', default='_mpr_debias_avgT_111_t88', help='suffix of T1 image (Default is _mpr_debias_avgT_111_t88)')
     parser.add_argument('--medial_mask_L', required=True, help='Left atlas medial wall mask')

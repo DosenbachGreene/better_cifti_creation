@@ -94,7 +94,17 @@ def create(settings):
     os.system('niftigz_4dfp -4 {0}/{1}.ribbon {0}/{1}.ribbon'.format(Ribbon,sub))
     os.system('t4img_4dfp none {0}/{1}.ribbon {0}/{1}.ribbon_333'.format(Ribbon,sub))
     os.system('niftigz_4dfp -n {0}/{1}.ribbon_333 {0}/{1}.ribbon_333'.format(Ribbon,sub))
+
+    # Convert to 4dfp/222 space
+    os.system('t4img_4dfp none {0}/{1}.ribbon {0}/{1}.ribbon_222 -O222 -n'.format(Ribbon,sub))
+    os.system('niftigz_4dfp -n {0}/{1}.ribbon_222 {0}/{1}.ribbon_222'.format(Ribbon,sub))
+
     print('Ribbon Creation Done.')
 
-    # return 333 ribbon
-    return '{}/{}.ribbon_333.nii.gz'.format(Ribbon,sub),sub
+    # return 222 or 333 ribbon depending on settings
+    if settings['space'] == '333':
+        return '{}/{}.ribbon_333.nii.gz'.format(Ribbon,sub),sub
+    elif settings['space'] == '222':
+        return '{}/{}.ribbon_222.nii.gz'.format(Ribbon,sub),sub
+    else:
+        raise ValueError("Space {} not supported".format(settings['space']))
