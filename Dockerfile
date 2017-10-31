@@ -15,7 +15,8 @@ RUN mkdir -p /input/fcprocessed_dir \
 	mkdir -p /input/fs_lr_surf_dir \
 	mkdir -p /input/medial_mask_dir \
 	mkdir -p /input/sw_medial_mask_dir \
-	mkdir -p /output
+	mkdir -p /output \
+    mkdir -p /temp
 
 # Set Entrypoint
 WORKDIR /mnt
