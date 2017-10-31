@@ -51,14 +51,14 @@ def run(settings):
     session = os.path.basename(func_run[0]).split('_')[0]
 
     # convert 4dfp to nifti
-    os.system('niftigz_4dfp -n {} /tmp/funcvol_temp'.format(func_run[0]))
+    os.system('niftigz_4dfp -n {} /temp/funcvol_temp'.format(func_run[0]))
 
     # Remove NaNs from data
-    os.system('fslmaths /tmp/funcvol_temp -nan /tmp/funcvol')
-    os.remove('/tmp/funcvol_temp.nii.gz')
+    os.system('fslmaths /temp/funcvol_temp -nan /temp/funcvol')
+    os.remove('/temp/funcvol_temp.nii.gz')
 
     # convert unprocessed to nifti
-    os.system('niftigz_4dfp -n {} /tmp/funcvol_unprocessed'.format(unproc_func_run[0]))
+    os.system('niftigz_4dfp -n {} /temp/funcvol_unprocessed'.format(unproc_func_run[0]))
 
     # Test if ribbon already exists for this subject
     ribbon_found = glob.glob(os.path.join(settings['output'],'Ribbon','*.ribbon_333.nii.gz'))
@@ -94,7 +94,7 @@ def run(settings):
 
         # Map hemisphere to surface
         print('Subject {}, Session {}: mapping {} hemisphere data to surface.'.format(subject,session,side))
-        os.system('wb_command -volume-to-surface-mapping /tmp/funcvol.nii.gz {} {}/surf_timecourses/{}.func.gii -ribbon-constrained {} {} -volume-roi {}'.format(
+        os.system('wb_command -volume-to-surface-mapping /temp/funcvol.nii.gz {} {}/surf_timecourses/{}.func.gii -ribbon-constrained {} {} -volume-roi {}'.format(
             midsurf,settings['output'],surfname,whitesurf,pialsurf,submask
         ))
 
@@ -129,19 +129,19 @@ def run(settings):
 
     # Smooth data in volume within mask
     print('Subject {}, Session {}: Smoothing functional data within volume mask'.format(subject,session))
-    os.system('wb_command -volume-smoothing /tmp/funcvol.nii.gz {} /tmp/funcvol_wROI255.nii.gz -roi {}'.format(
+    os.system('wb_command -volume-smoothing /temp/funcvol.nii.gz {} /temp/funcvol_wROI255.nii.gz -roi {}'.format(
        settings['smoothnum'],settings['subcort_mask']
     ))
 
     # Remove temp files
-    os.remove('/tmp/funcvol.nii.gz')
-    os.remove('/tmp/funcvol_unprocessed.nii.gz')
+    os.remove('/temp/funcvol.nii.gz')
+    os.remove('/temp/funcvol_unprocessed.nii.gz')
 
     # Create cifti timeseries
     print('Subject {}, Session {}: Combining surface and volume data to create cifti timeseries.'.format(subject,session))
     os.system('wb_command '
         '-cifti-create-dense-timeseries {0}/cifti_timeseries_normalwall/{1}_LR_surf_subcort_333_32k_fsLR_smooth{2}.dtseries.nii '
-        '-volume /tmp/funcvol_wROI255.nii.gz {3} '
+        '-volume /temp/funcvol_wROI255.nii.gz {3} '
         '-left-metric {0}/surf_timecourses/{1}_L_dil10_32k_fs_LR_smooth{2}.func.gii '
         '-roi-left {4} '
         '-right-metric {0}/surf_timecourses/{1}_R_dil10_32k_fs_LR_smooth{2}.func.gii '
@@ -162,7 +162,7 @@ def run(settings):
         print('Subject {}, Session {}: Combining surface and volume data to create cifti timeseries (smallwall).'.format(subject,session))
         os.system('wb_command '
             '-cifti-create-dense-timeseries {0}/cifti_timeseries_smallwall/{1}_LR_surf_subcort_333_32k_fsLR_smooth{2}.dtseries.nii '
-            '-volume /tmp/funcvol_wROI255.nii.gz {3} '
+            '-volume /temp/funcvol_wROI255.nii.gz {3} '
             '-left-metric {0}/surf_timecourses/{1}_L_dil10_32k_fs_LR_smooth{2}.func.gii '
             '-roi-left {4} '
             '-right-metric {0}/surf_timecourses/{1}_R_dil10_32k_fs_LR_smooth{2}.func.gii '
@@ -178,8 +178,8 @@ def run(settings):
             settings['TR'] # Arg 6
         ))
 
-    # Delete tmp files
-    os.remove('/tmp/funcvol_wROI255.nii.gz')
+    # Delete temp files
+    os.remove('/temp/funcvol_wROI255.nii.gz')
 
 if __name__ == '__main__':
     # parse arguments to command
