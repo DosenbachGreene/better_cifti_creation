@@ -210,6 +210,15 @@ def run(settings):
     # Delete temp files
     os.remove('{}/funcvol_wROI255.nii.gz'.format(temp_dir))
 
+# define function to convert sting to boolean
+def str2bool(v):
+    if v.lower() in ('yes', 'true', 't', 'y', '1'):
+        return True
+    elif v.lower() in ('no', 'false', 'f', 'n', '0'):
+        return False
+    else:
+        raise argparse.ArgumentTypeError('Boolean value expected.')
+
 if __name__ == '__main__':
     # parse arguments to command
     parser = argparse.ArgumentParser(description='This script creates a Cifti for a single session from freesurfer and fcprocessed outputs. All paths are relative to docker container.')
@@ -223,10 +232,10 @@ if __name__ == '__main__':
     parser.add_argument('--fs_LR_surfdir', default='/input/fs_lr_surf_dir', help='Location of fs_LR-registered surface (Should contain Native and fsaverage_LR32k subfolders with surfaces)')
     parser.add_argument('--t1_suffix', default='_mpr_debias_avgT_111_t88', help='suffix of T1 image (Default is _mpr_debias_avgT_111_t88)')
     parser.add_argument('--medial_mask_dir', default='/input/medial_mask_dir', help='directory to medial wall masks')
-    parser.add_argument('--medial_mask_suffix', default='atlasroi.32k_fs_LR.shape.gii', help='suffix of medial masks (default is .atlasroi.32k_fs_LR.shape.gii)')
+    parser.add_argument('--medial_mask_suffix', default='atlasroi.32k_fs_LR.shape.gii', help='suffix of medial masks (default is atlasroi.32k_fs_LR.shape.gii)')
     parser.add_argument('--sw_medial_mask_dir', help='directory to small wall medial masks')
-    parser.add_argument('--sw_medial_mask_suffix', default='atlasroi.32k_fs_LR.shape.gii', help='suffix of small wall medial masks (default is .atlasroi.32k_fs_LR.shape.gii)')
-    parser.add_argument('--smooth', default=True, help='flag to enable/disable (true/false) smoothing; enabled by default')
+    parser.add_argument('--sw_medial_mask_suffix', default='atlasroi.32k_fs_LR.shape.gii', help='suffix of small wall medial masks (default is atlasroi.32k_fs_LR.shape.gii)')
+    parser.add_argument('--smooth', type=str2bool, default='true', help='flag to enable/disable (true/false) smoothing; enabled by default')
     parser.add_argument('--smoothnum', default=2.55, help='sigma of smoothing kernel to be applied')
     parser.add_argument('--output', default='/output', help='Path to output')
 
