@@ -76,7 +76,7 @@ def run(settings):
         print('Temp directory for current subject/session already made.')
 
     # convert 4dfp to nifti
-    os.system('niftigz_4dfp -n {} {}/funcvol_temp'.format(func_run[0],temp_dir)
+    os.system('niftigz_4dfp -n {} {}/funcvol_temp'.format(func_run[0],temp_dir))
 
     # Remove NaNs from data
     os.system('fslmaths {0}/funcvol_temp -nan {0}/funcvol'.format(temp_dir))
