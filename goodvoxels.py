@@ -5,7 +5,7 @@ import numpy
 import os
 import subprocess
 
-def collect(settings,ribbon_path,session,temp_dir):
+def collect(settings,ribbon_path,session,boldrun,temp_dir):
     """
         TO-DO Explaination of what this function does
     """
@@ -14,7 +14,7 @@ def collect(settings,ribbon_path,session,temp_dir):
     factor = 0.5
 
     # load tmask
-    tmask = numpy.loadtxt(settings['tmask']).astype(bool)
+    tmask = numpy.loadtxt(os.path.join('/input/tmask_dir',settings['tmask'])).astype(bool)
 
     # load functional volume nifti
     img = nibabel.nifti1.load('{}/funcvol_unprocessed.nii.gz'.format(temp_dir))
@@ -61,4 +61,4 @@ def collect(settings,ribbon_path,session,temp_dir):
     os.remove('{}/funcvol_mask.nii.gz'.format(temp_dir))
 
     # return submask
-    return '{}/goodvoxels/{}_goodvoxels.nii.gz'.format(settings['output'],session)
+    return '{}/goodvoxels/{}_{}_goodvoxels.nii.gz'.format(settings['output'],session,os.path.basename(boldrun))
