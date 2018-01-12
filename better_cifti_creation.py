@@ -57,8 +57,7 @@ def run(settings):
         ribbon_path,subject = ribbon.create(settings)
 
     # get the functional bold runs and loop over them
-    bold_dirs = glob.glob(os.path.join(settings['fcprocessed_dir'],'bold*'))
-    for boldrun in bold_dirs:
+    for boldrun in map(lambda x : os.path.join(settings['fcprocessed_dir'],x),settings['run']):
         func_run = glob.glob(os.path.join(boldrun,'*{}.4dfp.img'.format(settings['fcprocessed_suffix'])))
         assert func_run, 'functional bold run not found for session.'
         unproc_func_run = glob.glob(os.path.join(boldrun,'*{}.4dfp.img'.format(settings['unprocessed_suffix'])))
@@ -149,7 +148,7 @@ def run(settings):
         if settings['smooth']: # check if smoothing enabled
             print('Subject {}, Session {}: Smoothing functional data within volume mask'.format(subject,session))
             os.system('wb_command -volume-smoothing {0}/funcvol.nii.gz {1} {0}/funcvol_wROI255.nii.gz -roi {2}'.format(
-               temp_dir,settings['smoothnum'],os.path.join('/input/subcort_mask_dir',settings['subcort_mask'])
+               temp_dir,settings['smoothnum'],os.path.join(settings['subcort_mask_dir'],settings['subcort_mask'])
             ))
         else: # do not smooth, simply copy the functional volume without smoothing
             shutil.copyfile(
@@ -175,7 +174,7 @@ def run(settings):
             settings['output'], # Arg 0
             session, # Arg 1
             settings['smoothnum'], # Arg 2
-            os.path.join('/input/subcort_mask_dir',settings['subcort_mask']), # Arg 3
+            os.path.join(settings['subcort_mask_dir'],settings['subcort_mask']), # Arg 3
             settings['medial_mask_dir'], # Arg 4
             subject, # Arg 5
             settings['medial_mask_suffix'], # Arg 6
@@ -200,7 +199,7 @@ def run(settings):
                 settings['output'], # Arg 0
                 session, # Arg 1
                 settings['smoothnum'], # Arg 2
-                os.path.join('/input/subcort_mask_dir',settings['subcort_mask']), # Arg 3
+                os.path.join(settings['subcort_mask_dir'],settings['subcort_mask']), # Arg 3
                 settings['sw_medial_mask_dir'], # Arg 4
                 subject, # Arg 5
                 settings['sw_medial_mask_suffix'], # Arg 6
@@ -225,21 +224,24 @@ def str2bool(v):
 if __name__ == '__main__':
     # parse arguments to command
     parser = argparse.ArgumentParser(description='This script creates a Cifti for a single session from freesurfer and fcprocessed outputs. All paths are relative to docker container.')
-    parser.add_argument('--fcprocessed_dir', default='/input/fcprocessed_dir', help='Path to fc-processed data (single session of subject)')
+    parser.add_argument('--fcprocessed_dir', default='/input/fcprocessed_dir', help='Path to fc-processed data (single session of subject) (Default is /input/fcprocessed_dir)')
     parser.add_argument('--fcprocessed_suffix', default='_b1_faln_dbnd_xr3d_uwrp_atl_bpss_resid', help='suffix of UNSMOOTHED fc-processed data (Default is _faln_dbnd_xr3d_uwrp_atl_bpss_resid)')
     parser.add_argument('--unprocessed_suffix', default='_b1_faln_dbnd_xr3d_uwrp_atl', help='suffix of UNPROCESSED fc-processed data (Default is _faln_dbnd_xr3d_uwrp_atl)')
-    parser.add_argument('--TR', required=True, help='TR of session')
-    parser.add_argument('--tmask', required=True, help='filename of tmask')
-    parser.add_argument('--subcort_mask', required=True, help='filename of volumetric subcortical mask label file')
-    parser.add_argument('--space', default='333', help='Voxel space to write outputs in')
-    parser.add_argument('--fs_LR_surfdir', default='/input/fs_lr_surf_dir', help='Location of fs_LR-registered surface (Should contain Native and fsaverage_LR32k subfolders with surfaces)')
+    parser.add_argument('--run', default=['bold1'], nargs='+', help='run(s) in session to process (e.g --run bold1 bold2 bold3) (Default is bold1)')
+    parser.add_argument('--TR', required=True, help='TR of session (REQUIRED)')
+    parser.add_argument('--tmask_dir', default='/input/tmask_dir', help='directory of tmask (Default is /input/tmask_dir)')
+    parser.add_argument('--tmask', required=True, help='filename of tmask (REQUIRED)')
+    parser.add_argument('--subcort_mask_dir', default='/input/subcort_mask_dir', help='directory of subcortical mask (Default is /input/subcort_mask_dir)')
+    parser.add_argument('--subcort_mask', required=True, help='filename of volumetric subcortical mask label file (REQUIRED)')
+    parser.add_argument('--space', default='333', help='Voxel space to write outputs in (Default is 333)')
+    parser.add_argument('--fs_LR_surfdir', default='/input/fs_lr_surf_dir', help='Location of fs_LR-registered surface (Should contain Native and fsaverage_LR32k subfolders with surfaces) (Default is /input/fs_lr_surf_dir)')
     parser.add_argument('--t1_suffix', default='_mpr_debias_avgT_111_t88', help='suffix of T1 image (Default is _mpr_debias_avgT_111_t88)')
-    parser.add_argument('--medial_mask_dir', default='/input/medial_mask_dir', help='directory to medial wall masks')
-    parser.add_argument('--medial_mask_suffix', default='atlasroi.32k_fs_LR.shape.gii', help='suffix of medial masks (default is atlasroi.32k_fs_LR.shape.gii)')
+    parser.add_argument('--medial_mask_dir', default='/input/medial_mask_dir', help='directory to medial wall masks (Default is /input/medial_mask_dir)')
+    parser.add_argument('--medial_mask_suffix', default='atlasroi.32k_fs_LR.shape.gii', help='suffix of medial masks (Default is atlasroi.32k_fs_LR.shape.gii)')
     parser.add_argument('--sw_medial_mask_dir', help='directory to small wall medial masks')
-    parser.add_argument('--sw_medial_mask_suffix', default='atlasroi.32k_fs_LR.shape.gii', help='suffix of small wall medial masks (default is atlasroi.32k_fs_LR.shape.gii)')
-    parser.add_argument('--smooth', type=str2bool, default='true', help='flag to enable/disable (true/false) smoothing; enabled by default')
-    parser.add_argument('--smoothnum', default=2.55, help='sigma of smoothing kernel to be applied')
+    parser.add_argument('--sw_medial_mask_suffix', default='atlasroi.32k_fs_LR.shape.gii', help='suffix of small wall medial masks (Default is atlasroi.32k_fs_LR.shape.gii)')
+    parser.add_argument('--smooth', type=str2bool, default='true', help='flag to enable/disable (true/false) smoothing (Default is true)')
+    parser.add_argument('--smoothnum', default=2.55, help='sigma of smoothing kernel to be applied (Default is 2.55)')
     parser.add_argument('--output', default='/output', help='Path to output')
 
     # parse argumaents into dict

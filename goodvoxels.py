@@ -14,7 +14,7 @@ def collect(settings,ribbon_path,session,boldrun,temp_dir):
     factor = 0.5
 
     # load tmask
-    tmask = numpy.loadtxt(os.path.join('/input/tmask_dir',settings['tmask'])).astype(bool)
+    tmask = numpy.loadtxt(os.path.join(settings['tmask_dir'],settings['tmask'])).astype(bool)
 
     # load functional volume nifti
     img = nibabel.nifti1.load('{}/funcvol_unprocessed.nii.gz'.format(temp_dir))
