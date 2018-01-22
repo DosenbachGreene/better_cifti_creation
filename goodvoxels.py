@@ -46,7 +46,7 @@ def collect(settings,ribbon_path,session,boldrun,temp_dir):
     final_ribmean = float(p3.communicate()[0])
     upper = final_ribmean + (final_ribstd * factor)
     os.system('fslmaths {0}/funcvol_mean -bin {0}/funcvol_mask'.format(temp_dir))
-    os.system('fslmaths {0}/funcvol_cov_norm_modulate -thr {1} -bin -sub {0}/funcvol_mask -mul -1 {2}/goodvoxels/{3}_goodvoxels'.format(temp_dir,upper,settings['output'],session))
+    os.system('fslmaths {0}/funcvol_cov_norm_modulate -thr {1} -bin -sub {0}/funcvol_mask -mul -1 {2}/goodvoxels/{3}_{4}_goodvoxels'.format(temp_dir,upper,settings['output'],session,os.path.basename(boldrun)))
 
     # delete temp files
     os.remove('{}/funcvol_mean.nii.gz'.format(temp_dir))
