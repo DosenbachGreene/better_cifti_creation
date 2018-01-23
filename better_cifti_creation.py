@@ -165,9 +165,9 @@ def run(settings):
         os.system('wb_command '
             '-cifti-create-dense-timeseries {0}/cifti_timeseries_normalwall/{1}_{10}_LR_surf_subcort_{8}_32k_fsLR_smooth{2}.dtseries.nii '
             '-volume {9}/funcvol_wROI255.nii.gz {3} '
-            '-left-metric {0}/surf_timecourses/{1}_L_dil10_32k_fs_LR_smooth{2}.func.gii '
+            '-left-metric {0}/surf_timecourses/{1}_{10}_L_dil10_32k_fs_LR_smooth{2}.func.gii '
             '-roi-left {4}/{5}.L.{6} '
-            '-right-metric {0}/surf_timecourses/{1}_R_dil10_32k_fs_LR_smooth{2}.func.gii '
+            '-right-metric {0}/surf_timecourses/{1}_{10}_R_dil10_32k_fs_LR_smooth{2}.func.gii '
             '-roi-right {4}/{5}.R.{6} '
             '-timestep {7} '
             '-timestart 0'.format(
@@ -190,9 +190,9 @@ def run(settings):
             os.system('wb_command '
                 '-cifti-create-dense-timeseries {0}/cifti_timeseries_smallwall/{1}_{10}_LR_surf_subcort_{8}_32k_fsLR_smooth{2}.dtseries.nii '
                 '-volume {9}/funcvol_wROI255.nii.gz {3} '
-                '-left-metric {0}/surf_timecourses/{1}_L_dil10_32k_fs_LR_smooth{2}.func.gii '
+                '-left-metric {0}/surf_timecourses/{1}_{10}_L_dil10_32k_fs_LR_smooth{2}.func.gii '
                 '-roi-left {4}/{5}.L.{6} '
-                '-right-metric {0}/surf_timecourses/{1}_R_dil10_32k_fs_LR_smooth{2}.func.gii '
+                '-right-metric {0}/surf_timecourses/{1}_{10}_R_dil10_32k_fs_LR_smooth{2}.func.gii '
                 '-roi-right {4}/{5}.R.{6} '
                 '-timestep {7} '
                 '-timestart 0'.format(
