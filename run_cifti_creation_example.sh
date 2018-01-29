@@ -12,3 +12,18 @@ docker run -it --rm \
     --fs_LR_surfdir /input/MSC01 \ # Define fs_LR_surfdir relative to docker image
     --medial_mask_L /input/MSC01.L.atlasroi.32k_fs_LR.shape.gii \ # Define medial mask relative to docker image
     --medial_mask_R /input/MSC01.R.atlasroi.32k_fs_LR.shape.gii
+
+singularity run \
+-B /data/cn4/dgreene/Patients/PediatricMSC/MSCPI05/Functionals/vc42936:/input/fcprocessed_dir \
+-B /data/cn4/dgreene/Patients/PediatricMSC/MSCPI05/Functionals/vc42936:/input/tmask_dir \
+-B [subcortical mask dir]:/input/subcort_mask_dir \
+-B [fs_lr surf dir]:/input/fs_lr_surf_dir \
+-B [medial mask dir]:/input/medial_mask_dir \
+-B [output dir]:/output \
+/data/nil-bluearc/GMT/Singularity/better_cifti_creation.img \
+--fcprocessed_suffix _faln_dbnd_xr3d_uwrp_atl_bpss_resid \
+--unprocessed_suffix _faln_dbnd_xr3d_uwrp_atl \
+--run bold2 \
+--TR 1.1 \
+--tmask vc42936_b1_tmask.txt
+--subcort_mask [filename of subcortical mask].nii
